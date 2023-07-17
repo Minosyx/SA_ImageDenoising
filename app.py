@@ -1,3 +1,4 @@
+import shutil
 from shiny import App, render, ui, reactive, Inputs, Outputs, Session
 from shiny.types import ImgData
 import shinyswatch
@@ -7,6 +8,8 @@ import image_processing as ip
 import imageio.v3 as iio
 import numpy as np
 import io
+
+import os
 
 app_ui = ui.page_fluid(
     shinyswatch.theme.darkly(),
@@ -155,6 +158,7 @@ def server(input: Inputs, output: Outputs, session: Session):
     denosing_ended = reactive.Value(False)
     denoised_img = reactive.Value(None)
     ready = reactive.Value(False)
+    denoised_dir = 'denoised'
 
     @reactive.Effect
     @reactive.event(input.file)
@@ -173,6 +177,9 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             ui.update_slider("fft_K", max=lesser // 2, value=min(lesser, 10))
             ui.update_numeric("fft_K_num", max=lesser // 2, value=min(lesser, 10))
+
+            if os.path.exists(denoised_dir):
+                shutil.rmtree(denoised_dir)
 
     @reactive.Effect
     @reactive.event(input.denoise_method)
@@ -256,10 +263,12 @@ def server(input: Inputs, output: Outputs, session: Session):
 
             ui.update_checkbox_group("state", selected=active_state)
 
-            iio.imwrite(f"{base}.{ext}", denoised_img.get(), extension=f".{ext}")
+            if not os.path.exists(denoised_dir):
+                os.makedirs(denoised_dir)
+            iio.imwrite(f"{denoised_dir}/{base}.{ext}", denoised_img.get(), extension=f".{ext}")
 
             img_old_path.set(img_path.get())
-            img_path.set(f"{base}.{ext}")
+            img_path.set(f"{denoised_dir}/{base}.{ext}")
 
     @reactive.Effect
     @reactive.event(ready)
