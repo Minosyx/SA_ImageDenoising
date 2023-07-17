@@ -131,7 +131,7 @@ Looking at the parameters we see that user can set:
 - the size of the filter
 - the threshold of the filter
 
-Increasing the size of the filter will preserve more of the low frequency components and therefore the denoised image will be more similar to the original image. Same goes for the threshold. The higher the threshold, the less of the high frequency components will be removed and the denoised image will be more similar to the original image.
+Increasing the size of the filter will preserve higher frequency components and therefore the denoised image will be more similar to the original noisy image. Same goes for the threshold. The higher the threshold, the less of the high frequency components will be removed and the denoised image will be more similar to the original noisy image.
 
 ![Screenshot](doc/images/img15.png)
 
