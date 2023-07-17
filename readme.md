@@ -146,7 +146,7 @@ There are two methods of thresholding: soft and hard. The difference between the
 
 ![Screenshot](doc/images/img17.png)
 
-There are two implementations of methods that set the threshold value. The first one is the universal thresholding method also known as VisuShrink. The threshold value is set to the standard deviation of the noise multiplied by the square root of 2 times the logarithm of the number of coefficients. This threshold is designed to be optimal for Gaussian noise. This method tends to overestimate the noise level and the denoised image is over-smoothed. That is why we reduce the estimated standard deviation of the noise by dividing it by a specified factor. More sharpness is achieved by increasing the factor.
+There are two implementations of methods that set the threshold value. The first one is the universal thresholding method also known as VisuShrink. The threshold value is set to the standard deviation of the noise multiplied by the square root of 2 times the logarithm of the number of coefficients. This threshold is designed to be optimal for Gaussian noise. This method tends to overestimate the noise level and the denoised image is over-smoothed. That is why we reduce the estimated standard deviation of the noise by dividing it by a specified divisor. More sharpness is achieved by increasing the divisor.
 
 The second one is BayesShrink which is an adaptive thresholding method. A unique threshold is estimated for each wavelet subband. This is generally an improvement over the universal thresholding method.
 
