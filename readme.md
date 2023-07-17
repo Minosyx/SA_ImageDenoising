@@ -1,4 +1,4 @@
-# Image denoising using SVD, FFT and Wavelet transforms
+# Image denoising using SVD, FFT and Wavelet transform
 
 ## 1. Introduction
 
