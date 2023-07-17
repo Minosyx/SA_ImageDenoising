@@ -29,14 +29,14 @@ On top of that, the libraries used to finalize the project are:
 
 User is presented with a simple UI looking like this:
 
-![Screenshot](doc\images\img1.png)
+![Screenshot](doc/images/img1.png)
 
 On the top there is an upload button which allows the user to upload an image of choice.
 Below that we can see a select box with all the implemented denoising algorithms.
 Selecting an algorithm will display the parameters that can be adjusted for that method. If we upload the image we can then try to denoise it using the selected algorithm.
 The preview of the image is displayed on the right side of the screen. The user can also download the image by clicking the download button after the image has been denoised.
 
-![Screenshot](doc\images\img2.png)
+![Screenshot](doc/images/img2.png)
 
 All the parameters that user can modify will be described in the sections dedicated to each algorithm.
 
@@ -49,29 +49,29 @@ The method in intself is very straightforward. We decompose the image matrix int
 
 Let's take a closer look at the singular values matrix. As an example we will use the image of man.
 
-![Screenshot](images\sp_img_gray_noise.png)
+![Screenshot](images/sp_img_gray_noise.png)
 
 Plotted singular values of the image matrix:
 
-![Screenshot](doc\images\img3.png)
+![Screenshot](doc/images/img3.png)
 
 We can see that the singular values decay very fast. This means that we can approximate the original image matrix with a matrix that has only a few singular values. This is exactly what we do in the denoising algorithm. We take the singular values matrix and set all the values below a certain threshold to zero. Then we multiply the three matrices and we get the denoised image.
 
 In the implementation of the algorithm the user can set the number of singular values that will be used to reconstruct the image. The higher the number, the better the quality of the image but also the less noise is removed. Based on the plot above we set the number of singular values we want to preserve to 20.
 
-![Screenshot](doc\images\img4.png)
+![Screenshot](doc/images/img4.png)
 
 We can see that the image is denoised but there is still some noise left. We might decrease the number of singular values to 10.
 
-![Screenshot](doc\images\img5.png)
+![Screenshot](doc/images/img5.png)
 
 Now the image is more denoised but we can see that the quality of the image is way worse. This is because we removed too many singular values that represent the image matrix.
 
 Let's try two values in the range between the beginning and the end of slow decay of the singular values.
 
-![Screenshot](doc\images\img6.png)
+![Screenshot](doc/images/img6.png)
 
-![Screenshot](doc\images\img7.png)
+![Screenshot](doc/images/img7.png)
 
 As we can clearly see there is not much of a difference between the two images. So we can conclude that preserving the values up to the beginning of the slow decay of the singular values is the best choice that maximizes the denoising effect and preserves decent quality of the image.
 
@@ -83,16 +83,16 @@ Initially we convert the image into the frequency domain using the FFT transform
 
 As an example we use the same man image as before.
 
-![Screenshot](images\sp_img_gray_noise.png)
+![Screenshot](images/sp_img_gray_noise.png)
 
 Let's take a look at the magnitude of the FFT transform of the image.
 
-![Screenshot](doc\images\img8.png)
+![Screenshot](doc/images/img8.png)
 
 We see some high power of frequencies in the image represented by the white color.
 The corners in the spectrum image are the low frequency components. So we can see there is high energy in the low frequency components which is a normal situation for most images. We shift the spectrum so that the low frequency components are in the center of the image as it is easier to visualize the spectrum this way.
 
-![Screenshot](doc\images\img9.png)
+![Screenshot](doc/images/img9.png)
 
 Now we can see that the low frequency components are in the center of the image.
 Our next step is to zero out the components in the centre of the spectrum. This is because the low frequency components represent the smooth areas of the image and we want to preserve them. The high frequency components represent the noise and we want to remove them.
@@ -102,15 +102,15 @@ For the size of the filtering kernel equal to 30 we get the following filters:
 
 - Gaussian
 
-![Screenshot](doc\images\img10.png)
+![Screenshot](doc/images/img10.png)
 
 - Ideal
 
-![Screenshot](doc\images\img11.png)
+![Screenshot](doc/images/img11.png)
 
 - Square ideal
 
-![Screenshot](doc\images\img12.png)
+![Screenshot](doc/images/img12.png)
 
 Next steps will be based on the square ideal filter. The user can set the size of the filtering kernel. The bigger the kernel, the more of the centre of the spectrum will be preserved. Then we look for peaks below the specified percentage of the maximum value of the spectrum. We shift found peaks back to align them with the original spectrum. After multiplying the original spectrum with the the mask obtained from the peaks we get the denoised image.
 
@@ -119,11 +119,11 @@ Now we clearly see why the use of filter is needed. We indeed preserve the low f
 Let's say we set our threshold to 40 percentile of the maximum value of the spectrum.
 The denoised image's spectrum looks like this:
 
-![Screenshot](doc\images\img13.png)
+![Screenshot](doc/images/img13.png)
 
 All that is left is to perform the inverse FFT transform to get the denoised image.
 
-![Screenshot](doc\images\img14.png)
+![Screenshot](doc/images/img14.png)
 
 Looking at the parameters we see that user can set:
 
@@ -133,9 +133,9 @@ Looking at the parameters we see that user can set:
 
 Increasing the size of the filter will preserve more of the low frequency components and therefore the denoised image will be more similar to the original image. Same goes for the threshold. The higher the threshold, the less of the high frequency components will be removed and the denoised image will be more similar to the original image.
 
-![Screenshot](doc\images\img15.png)
+![Screenshot](doc/images/img15.png)
 
-![Screenshot](doc\images\img16.png)
+![Screenshot](doc/images/img16.png)
 
 ### 3.3. Wavelet
 
@@ -144,19 +144,19 @@ During wavelet decomposition, the image is decomposed into a series of wavelet c
 
 There are two methods of thresholding: soft and hard. The difference between the two is that the soft thresholding method sets the coefficients below the threshold to zero and the coefficients above the threshold are reduced by the threshold value. The hard thresholding method sets the coefficients below the threshold to zero and the coefficients above the threshold are left unchanged.
 
-![Screenshot](doc\images\img17.png)
+![Screenshot](doc/images/img17.png)
 
 There are two implementations of methods that set the threshold value. The first one is the universal thresholding method also known as VisuShrink. The threshold value is set to the standard deviation of the noise multiplied by the square root of 2 times the logarithm of the number of coefficients. This threshold is designed to be optimal for Gaussian noise. This method tends to overestimate the noise level and the denoised image is over-smoothed. That is why we reduce the estimated standard deviation of the noise by dividing it by a specified factor. More sharpness is achieved by increasing the factor.
 
 The second one is BayesShrink which is an adaptive thresholding method. A unique threshold is estimated for each wavelet subband. This is generally an improvement over the universal thresholding method.
 
-![Screenshot](doc\images\img18.png)
+![Screenshot](doc/images/img18.png)
 
 The user can set the type of the method that is used for estimating the threshold value, so it's either VisuShrink or BayesShrink. Next up we can set if we want use the soft or the hard thresholding. The wavelet parameter specifies the type of the wavelet that is used for the decomposition. The user can select any of the discrete wavelets that are available in the PyWavelets library. The level parameter specifies the level of the decomposition. The higher the level, the more detail coefficients are obtained and the more noise is removed.
 
 For the VisuShrink method one additional parameter can be set. It's the sigma reduction factor. The higher the factor, the more the estimated standard deviation of the noise is reduced and the more sharpness is achieved.
 
-![Screenshot](doc\images\img19.png)
+![Screenshot](doc/images/img19.png)
 
 More about VisuShrink and BayesShrink can be found in the following paper: [Shivani Mupparaju, B Naga Venkata Satya Durga Jahnavi, 2013, Comparison of Various Thresholding Techniques of Image Denoising, INTERNATIONAL JOURNAL OF ENGINEERING RESEARCH & TECHNOLOGY (IJERT) Volume 02, Issue 09 (September 2013)](https://www.ijert.org/research/comparison-of-various-thresholding-techniques-of-image-denoising-IJERTV2IS90812.pdf)
 
