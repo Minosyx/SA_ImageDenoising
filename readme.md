@@ -154,7 +154,7 @@ The second one is BayesShrink which is an adaptive thresholding method. A unique
 
 The user can set the type of the method that is used for estimating the threshold value, so it's either VisuShrink or BayesShrink. Next up we can set if we want to use soft or hard thresholding. The wavelet parameter specifies the type of the wavelet that is used for the decomposition. The user can select any of the discrete wavelets that are available in the PyWavelets library. The level parameter specifies the level of the decomposition. The higher the level, the more detail coefficients are obtained and the more noise is removed.
 
-For the VisuShrink method one additional parameter can be set. It's the sigma reduction factor. The higher the factor, the more the estimated standard deviation of the noise is reduced and the more sharpness is achieved.
+For the VisuShrink method one additional parameter can be set. It's the standard deviation divisor. The higher the divisor, the more the estimated standard deviation of the noise is reduced and the more sharpness is achieved.
 
 ![Screenshot](doc/images/img19.png)
 
